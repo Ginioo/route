@@ -4,7 +4,7 @@
 $message = 'test Message';
 
 // initialize event object;
-$oEvent = new \Ginowu\Sandbox\Event();
+$oEvent = new \Sandbox\Event();
 
 // 註冊事件
 $oEvent->on('test', function ($a) use ($message) {
