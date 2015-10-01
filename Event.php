@@ -6,7 +6,7 @@
  * @since   2015.10.01
  * @version v1
  */
-namespace Ginowu\Sandbox;
+namespace Sandbox;
 
 class Event
 {
