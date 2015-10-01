@@ -1,11 +1,9 @@
-# Sandbox
-
 #how to use?
-
+```php
 // varialbe outside of the closure bellow
 $message = 'test Message';
 
-// initialize event object
+// initialize event object;
 $oEvent = new \Ginowu\Sandbox\Event();
 
 // 註冊事件
@@ -19,3 +17,4 @@ if ($oEvent->hasEvent('test')) {
     // 觸發事件
     $oEvent->emit('test', array('1', '2'));
 }
+```
