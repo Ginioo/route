@@ -4,45 +4,52 @@
  *
  * @author  Gino Wu
  * @since   2015.10.01
- * @version v1
+ * @version v2
  */
 use \Sandbox\Event as Event;
 
 class Application extends Event
 {
     /**
-     * POST   C
-     * GET    R
-     * PUT    U
-     * DELETE D
-     * @return $requestMethod CRUD
+     * Mapping crud to event name
+     * POST:create
+     * GET:retrieve
+     * PUT:update
+     * DELETE:delete
+     *
+     * @param void
+     * @return string $eventName
      */
     public function getRequestEvent()
     {
+        $aRequestUri = explode('?', $_SERVER['REQUEST_URI']);
+        $requestUri = $aRequestUri[0];
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'DELETE':
-                $requestMethod = 'delete';
+                $eventName = 'delete';
                 break;
             case 'POST':
-                $requestMethod = 'create';
+                $eventName = 'create';
                 break;
             case 'PUT':
-                $requestMethod = 'update';
+                $eventName = 'update';
                 break;
             case 'GET':
-                $requestMethod = 'retrieve';
+                $eventName = 'retrieve';
                 break;
             default:
-                $requestMethod = '';
+                $eventName = '';
                 break;
         }
 
-        return $requestMethod;
+        return $eventName . $requestUri;
     }
-    
+
     /**
-     * 
-     * @return $input 傳入的參數
+     * get input value
+     *
+     * @param void
+     * @return array $input
      */
     public function getInputData()
     {
@@ -53,5 +60,92 @@ class Application extends Event
         }
 
         return $input;
+    }
+
+    /**
+     * post
+     *
+     * @param string $route
+     * @param string $controllerClass
+     * @param string $method
+     * @return void
+     */
+    public function post($route, $controllerClass, $method)
+    {
+        $this->on('create/' . $route, $this->deligate($controllerClass, $method));
+    }
+
+    /**
+     * get
+     *
+     * @param string $route
+     * @param string $controllerClass
+     * @param string $method
+     * @return void
+     */
+    public function get($route, $controllerClass, $method)
+    {
+        $this->on('retrieve/' . $route, $this->deligate($controllerClass, $method));
+    }
+
+    /**
+     * put
+     *
+     * @param string $route
+     * @param string $controllerClass
+     * @param string $method
+     * @return void
+     */
+    public function put($route, $controllerClass, $method)
+    {
+        $this->on('update/' . $route, $this->deligate($controllerClass, $method));
+    }
+
+    /**
+     * delete
+     *
+     * @param string $route
+     * @param string $controllerClass
+     * @param string $method
+     * @return void
+     */
+    public function delete($route, $controllerClass, $method)
+    {
+        $this->on('delete/' . $route, $this->deligate($controllerClass, $method));
+    }
+
+    /**
+     * debug
+     *
+     * @param string $callback
+     * @return void
+     */
+    public function debug($callback)
+    {
+        $this->on('debug', $callback);
+    }
+
+    /**
+     * deligate
+     *
+     * @param string $controllerClass
+     * @param string $method
+     * @return void
+     */
+    private function deligate($controllerClass, $method)
+    {
+        if (!class_exists($controllerClass)) {
+            throw new Exception('class:' . $controllerClass . 'does not exist');
+        }
+
+        return function ($input) use ($controllerClass, $method) {
+            $oController = new $controllerClass();
+
+            if (!method_exists($oController, $method)) {
+                throw new Exception('method:' . $method . 'does not exist in class' . $controllerClass);
+            } else {
+                $oController->{$method}($input);
+            }
+        };
     }
 }
