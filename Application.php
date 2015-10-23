@@ -6,7 +6,7 @@
  * @since   2015.10.01
  * @version v2
  */
-use \Sandbox\Event as Event;
+namespace Sandbox;
 
 class Application extends Event
 {
