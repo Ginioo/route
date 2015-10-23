@@ -24,31 +24,25 @@ if ($oEvent->hasEvent('test')) {
 use \Sandbox\Application as TestApplication;
 
 $app = new TestApplication();
-$app->on('create', function ($a) use ($message) {
-    echo $a . ' ' . $message . '<br>';
-});
-
-$app->on('retrieve', function ($a) use ($message) {
-    echo $a . ' ' . $message . '<br>';
-});
-
-$app->on('update', function ($a) use ($message) {
-    echo $a . ' ' . $message . '<br>';
-});
-
-$app->on('delete', function ($a) use ($message) {
-    echo $a . ' ' . $message . '<br>';
-});
-
-$app->on('debug', function ($message) {
-    error_reporting(E_ALL);
-    ini_set("display_errors", 1);
-
-    echo var_export($message, true) . '<br>';
-});
-
 $eventName = $app->getRequestEvent();
 $input = $app->getInputData();
+
+// route
+$app->post('path/sandBox.php', 'TestController', 'test');
+$app->get('path/sandBox.php', 'TestController', 'test2');
+$app->put('path/sandBox.php', 'TestController', 'test');
+$app->delete('path/sandBox.php', 'TestController', 'test');
+
+$app->debug(function ($input) {
+    error_reporting(E_ALL);
+    ini_set("display_errors", 1);
+    ini_set("display_startup_errors", 1);
+    ini_set("html_errors", 1);
+
+    echo 'debug start<br>';
+    var_dump($input);
+    echo 'debug end<br>';
+});
 
 if (isset($input['debug']) && $app->hasEvent('debug')) {
     $app->emit('debug', $input);
@@ -56,8 +50,11 @@ if (isset($input['debug']) && $app->hasEvent('debug')) {
 
 if ($app->hasEvent($eventName)) {
     // 觸發事件
-    $message = var_export($input, true);
-    $app->emit($eventName, $message);
+    try {
+        $app->emit($eventName, $input);
+    } catch (Exception $e) {
+        var_dump($e->getMessage());
+    }
 }
 
 ```
