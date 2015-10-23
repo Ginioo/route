@@ -28,10 +28,10 @@ $eventName = $app->getRequestEvent();
 $input = $app->getInputData();
 
 // route
-$app->post('path/sandBox.php', 'TestController', 'test');
-$app->get('path/sandBox.php', 'TestController', 'test2');
-$app->put('path/sandBox.php', 'TestController', 'test');
-$app->delete('path/sandBox.php', 'TestController', 'test');
+$app->post('path/sandBox.php', '\Sandbox\TestController', 'test');
+$app->get('path/sandBox.php', '\Sandbox\TestController', 'test2');
+$app->put('path/sandBox.php', '\Sandbox\TestController', 'test');
+$app->delete('path/sandBox.php', '\Sandbox\TestController', 'test');
 
 $app->debug(function ($input) {
     error_reporting(E_ALL);
