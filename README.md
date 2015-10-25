@@ -20,12 +20,13 @@ if ($oEvent->hasEvent('test')) {
 ```
 
 #how to use Application?
+add index.php with sample code as following, move index.php into {web root}/vendor/ginioo/sample/ 
 ```php
 //using composer's autoload
 require(dirname(dirname(__DIR__)) . '/autoload.php');
 $loader = new \Composer\Autoload\ClassLoader();
 // register classes with namespaces
-$loader->addPsr4('My\Namespaces\\', 'path/to/where/the/My/Namespaces/locatation');
+$loader->addPsr4('Ginioo\Sandbox\\', dirname(dirname(__DIR__)) . '/Ginioo/Sandbox');
 // activate the autoloader
 $loader->register();
 // $loader->setUseIncludePath(true);
@@ -36,10 +37,10 @@ $eventName = $app->getRequestEvent();
 $input = $app->getInputData();
 
 // route
-$app->post('the/uri/after/domainname/and/before/question/mark/', '\My\Namespaces\TestController', 'test');
-$app->get('the/uri/after/domainname/and/before/question/mark/', '\My\Namespaces\TestController', 'test2');
-$app->put('the/uri/after/domainname/and/before/question/mark/', '\My\Namespaces\TestController', 'test');
-$app->delete('the/uri/after/domainname/and/before/question/mark/', '\My\Namespaces\TestController', 'test');
+$app->post('vendor/ginioo/sample/', '\Ginioo\Sandbox\TestController', 'test');
+$app->get('vendor/ginioo/sample/', '\Ginioo\Sandbox\TestController', 'test2');
+$app->put('vendor/ginioo/sample/', '\Ginioo\Sandbox\TestController', 'test');
+$app->delete('vendor/ginioo/sample/', '\Ginioo\Sandbox\TestController', 'test');
 
 $app->debug(function ($input) {
     error_reporting(E_ALL);
