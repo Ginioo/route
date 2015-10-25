@@ -21,17 +21,25 @@ if ($oEvent->hasEvent('test')) {
 
 #how to use Application?
 ```php
-use \Sandbox\Application as TestApplication;
+//using composer's autoload
+require(dirname(dirname(__DIR__)) . '/autoload.php');
+$loader = new \Composer\Autoload\ClassLoader();
+// register classes with namespaces
+$loader->addPsr4('My\Namespaces\\', 'path/to/where/the/My/Namespaces/locatation');
+// activate the autoloader
+$loader->register();
+// $loader->setUseIncludePath(true);
 
-$app = new TestApplication();
+use \Ginioo\Sandbox\Application as SampleApplication;
+$app = new SampleApplication();
 $eventName = $app->getRequestEvent();
 $input = $app->getInputData();
 
 // route
-$app->post('path/sandBox.php', '\Sandbox\TestController', 'test');
-$app->get('path/sandBox.php', '\Sandbox\TestController', 'test2');
-$app->put('path/sandBox.php', '\Sandbox\TestController', 'test');
-$app->delete('path/sandBox.php', '\Sandbox\TestController', 'test');
+$app->post('the/uri/after/domainname/and/before/question/mark/', '\My\Namespaces\TestController', 'test');
+$app->get('the/uri/after/domainname/and/before/question/mark/', '\My\Namespaces\TestController', 'test2');
+$app->put('the/uri/after/domainname/and/before/question/mark/', '\My\Namespaces\TestController', 'test');
+$app->delete('the/uri/after/domainname/and/before/question/mark/', '\My\Namespaces\TestController', 'test');
 
 $app->debug(function ($input) {
     error_reporting(E_ALL);
