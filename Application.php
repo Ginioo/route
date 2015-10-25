@@ -6,7 +6,9 @@
  * @since   2015.10.01
  * @version v2
  */
-namespace Sandbox;
+namespace Ginioo\Sandbox;
+
+use \Exception;
 
 class Application extends Event
 {
@@ -135,14 +137,14 @@ class Application extends Event
     private function deligate($controllerClass, $method)
     {
         if (!class_exists($controllerClass)) {
-            throw new Exception('class:' . $controllerClass . 'does not exist');
+            throw new Exception('class:' . $controllerClass . ' does not exist');
         }
 
         return function ($input) use ($controllerClass, $method) {
             $oController = new $controllerClass();
 
             if (!method_exists($oController, $method)) {
-                throw new Exception('method:' . $method . 'does not exist in class' . $controllerClass);
+                throw new Exception('method:' . $method . ' does not exist in class:' . $controllerClass);
             } else {
                 $oController->{$method}($input);
             }
