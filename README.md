@@ -67,3 +67,10 @@ if ($app->hasEvent($eventName)) {
 }
 
 ```
+
+.htaccess sample
+```sh
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule "^api(.*)" "EstBadminton/index.php" [NC,L]
+```
