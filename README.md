@@ -1,3 +1,26 @@
+#using composer
+```
+{
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "Ginioo/Sandbox",
+                "version": "0.0.3",
+                "source": {
+                    "url": "https://github.com/Ginioo/Sandbox.git",
+                    "type": "git",
+                    "reference": "0.0.3"
+                }
+            }
+        }
+    ],
+    "require": {
+        "Ginioo/Sandbox": "0.0.3"
+    }
+}
+```
+
 #how to use Event?
 ```php
 // varialbe outside of the closure bellow
