@@ -43,7 +43,6 @@ class Application extends Event
                 $eventName = '';
                 break;
         }
-
         return $eventName . $requestUri;
     }
 
