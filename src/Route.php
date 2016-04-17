@@ -10,7 +10,7 @@ namespace Ginioo\Sandbox;
 
 use \Exception;
 
-class Application extends Event
+class Route extends Event
 {
     /**
      * Mapping crud to event name
