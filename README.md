@@ -53,11 +53,13 @@ $eventName = $app->getRequestEvent();
 $input = $app->getInputData();
 
 // route
-$app->post('vendor/ginioo/sample/', '\Ginioo\Sandbox\TestController', 'test');
-$app->get('vendor/ginioo/sample/', '\Ginioo\Sandbox\TestController', 'test2');
-$app->put('vendor/ginioo/sample/', '\Ginioo\Sandbox\TestController', 'test');
-$app->delete('vendor/ginioo/sample/', '\Ginioo\Sandbox\TestController', 'test');
+$app->post('some-sample-route/', '\Ginioo\Sandbox\TestController', 'test');
+$app->get('some-sample-route/', '\Ginioo\Sandbox\TestController', 'test2');
+$app->put('some-sample-route/', '\Ginioo\Sandbox\TestController', 'test');
+$app->delete('some-sample-route/', '\Ginioo\Sandbox\TestController', 'test');
 
+/*
+// use this only under develop environment
 $app->debug(function ($input) {
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
@@ -68,10 +70,10 @@ $app->debug(function ($input) {
     var_dump($input);
     echo 'debug end<br>';
 });
-
 if (isset($input['debug']) && $app->hasEvent('debug')) {
     $app->emit('debug', $input);
 }
+*/
 
 if ($app->hasEvent($eventName)) {
     // 觸發事件
