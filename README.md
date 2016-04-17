@@ -47,6 +47,14 @@ add index.php under project root folder with sample code as follows
 //using composer's autoload
 require('vendor/autoload.php');
 
+$rootPath = getcwd();
+$loader = new \Composer\Autoload\ClassLoader();
+// register classes with namespaces
+$loader->addPsr4('Controller\\', $rootPath . '/controllers');
+// activate the autoloader
+$loader->register();
+// $loader->setUseIncludePath(true);
+
 use \Ginioo\Sandbox\Route as SampleApplication;
 $app = new SampleApplication();
 
@@ -84,7 +92,11 @@ try {
         // 觸發事件
         $app->emit($eventName, $input);
     } else {
-        $app->getResource();
+        $resources = $app->getResource();
+        $header = $resources[0];
+        $subject = "{$rootPath}{$resources[1]}";
+        header($header);
+        echo file_get_contents($subject);
         exit();
     }
 } catch (Exception $e) {
@@ -94,7 +106,6 @@ try {
 if (isset($input['debug']) && $app->hasEvent('debug')) {
     $app->emit('debug', $input);
 }
-
 ```
 
 if you use apache, add .htaccess under project root folder with sample code as follows
