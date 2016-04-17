@@ -74,7 +74,7 @@ class Route extends Event
      */
     public function post($route, $controllerClass, $method)
     {
-        $this->on('create/' . $route, $this->deligate($controllerClass, $method));
+        $this->on("create/{$route}", $this->deligate($controllerClass, $method));
     }
 
     /**
@@ -87,7 +87,7 @@ class Route extends Event
      */
     public function get($route, $controllerClass, $method)
     {
-        $this->on('retrieve/' . $route, $this->deligate($controllerClass, $method));
+        $this->on("retrieve/{$route}", $this->deligate($controllerClass, $method));
     }
 
     /**
@@ -100,7 +100,7 @@ class Route extends Event
      */
     public function put($route, $controllerClass, $method)
     {
-        $this->on('update/' . $route, $this->deligate($controllerClass, $method));
+        $this->on("update/{$route}", $this->deligate($controllerClass, $method));
     }
 
     /**
@@ -113,7 +113,7 @@ class Route extends Event
      */
     public function delete($route, $controllerClass, $method)
     {
-        $this->on('delete/' . $route, $this->deligate($controllerClass, $method));
+        $this->on("delete/{$route}", $this->deligate($controllerClass, $method));
     }
 
     /**
@@ -137,14 +137,14 @@ class Route extends Event
     private function deligate($controllerClass, $method)
     {
         if (!class_exists($controllerClass)) {
-            throw new Exception('class:' . $controllerClass . ' does not exist');
+            throw new Exception("class: {$controllerClass} does not exist");
         }
 
         return function ($input) use ($controllerClass, $method) {
             $oController = new $controllerClass();
 
             if (!method_exists($oController, $method)) {
-                throw new Exception('method:' . $method . ' does not exist in class:' . $controllerClass);
+                throw new Exception("method: {$method} does not exist in class: {$controllerClass}");
             } else {
                 $oController->{$method}($input);
             }
