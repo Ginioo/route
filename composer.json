@@ -1,7 +1,7 @@
 {
-    "name": "ginioo/micro",
+    "name": "ginioo/sandbox",
     "description": "This's a micro component that makes you construct a tiny website easily.",
-    "keyword": ["micro", "website"],
+    "keyword": ["sandbox", "website"],
     "licence": "MIT",
     "author": [
         {
