@@ -53,7 +53,7 @@ $eventName = $app->getRequestEvent();
 $input = $app->getInputData();
 
 // route
-$app->post('some-sample-route/', '\Ginioo\Sandbox\TestController', 'test');
+$app->post('some-sample-route/', '\Ginioo\Sandbox\TestController', 'someMethodName');
 $app->get('some-sample-route/', '\Ginioo\Sandbox\TestController', 'test2');
 $app->put('some-sample-route/', '\Ginioo\Sandbox\TestController', 'test');
 $app->delete('some-sample-route/', '\Ginioo\Sandbox\TestController', 'test');
