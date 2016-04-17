@@ -49,14 +49,18 @@ require('vendor/autoload.php');
 
 use \Ginioo\Sandbox\Route as SampleApplication;
 $app = new SampleApplication();
-$eventName = $app->getRequestEvent();
-$input = $app->getInputData();
 
 // route
-$app->post('some-sample-route/', '\Ginioo\Sandbox\TestController', 'someMethodName');
-$app->get('some-sample-route/', '\Ginioo\Sandbox\TestController', 'test2');
-$app->put('some-sample-route/', '\Ginioo\Sandbox\TestController', 'test');
-$app->delete('some-sample-route/', '\Ginioo\Sandbox\TestController', 'test');
+$app->get('auction/', '\Controller\AuctionController', 'index');
+
+if ($app->hasEvent($eventName)) {
+    // 觸發事件
+    try {
+        $app->emit($eventName, $input);
+    } catch (Exception $e) {
+        var_dump($e->getMessage());
+    }
+}
 
 /*
 // use this only under develop environment
@@ -70,18 +74,25 @@ $app->debug(function ($input) {
     var_dump($input);
     echo 'debug end<br>';
 });
+// */
+
+$input = $app->getInputData();
+$eventName = $app->getRequestEvent();
+
+try {
+    if ($app->hasEvent($eventName)) {
+        // 觸發事件
+        $app->emit($eventName, $input);
+    } else {
+        $app->getResource();
+        exit();
+    }
+} catch (Exception $e) {
+    var_dump($e->getMessage());
+}
+
 if (isset($input['debug']) && $app->hasEvent('debug')) {
     $app->emit('debug', $input);
-}
-*/
-
-if ($app->hasEvent($eventName)) {
-    // 觸發事件
-    try {
-        $app->emit($eventName, $input);
-    } catch (Exception $e) {
-        var_dump($e->getMessage());
-    }
 }
 
 ```
