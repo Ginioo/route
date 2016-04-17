@@ -1,33 +1,32 @@
-#using composer
+# Component name and description
+This component contains a red-black-tree algorithm practise.
+
+# Install instruction
+1. create a composer.json in your local project folder
 ```
 {
-    "repositories": [
-        {
-            "type": "package",
-            "package": {
-                "name": "Ginioo/Sandbox",
-                "version": "0.0.3",
-                "source": {
-                    "url": "https://github.com/Ginioo/Sandbox.git",
-                    "type": "git",
-                    "reference": "0.0.3"
-                }
-            }
-        }
-    ],
     "require": {
-        "Ginioo/Sandbox": "0.0.3"
+        "ginioo/sandbox": "dev-master"
     }
 }
 ```
+2. then execute
+```
+$ composer install
+```
+   or execute this command
+```
+$ composer require  "ginioo/sandbox:”dev-master"
+```
 
-#how to use Event?
+# Usage instruction
+##how to use Event?
 ```php
 // varialbe outside of the closure bellow
 $message = 'test Message';
 
 // initialize event object;
-$oEvent = new \Sandbox\Event();
+$oEvent = new Ginioo\Sandbox\Event();
 
 // 註冊事件
 $oEvent->on('test', function ($a) use ($message) {
@@ -42,19 +41,13 @@ if ($oEvent->hasEvent('test')) {
 }
 ```
 
-#how to use Application?
-add index.php with sample code as following, move index.php into {web root}/vendor/ginioo/sample/ 
+# Testing instruction
+add index.php under project root folder with sample code as follows
 ```php
 //using composer's autoload
-require(dirname(dirname(__DIR__)) . '/autoload.php');
-$loader = new \Composer\Autoload\ClassLoader();
-// register classes with namespaces
-$loader->addPsr4('Ginioo\Sandbox\\', dirname(dirname(__DIR__)) . '/Ginioo/Sandbox');
-// activate the autoloader
-$loader->register();
-// $loader->setUseIncludePath(true);
+require('vendor/autoload.php');
 
-use \Ginioo\Sandbox\Application as SampleApplication;
+use \Ginioo\Sandbox\Route as SampleApplication;
 $app = new SampleApplication();
 $eventName = $app->getRequestEvent();
 $input = $app->getInputData();
@@ -91,9 +84,17 @@ if ($app->hasEvent($eventName)) {
 
 ```
 
-.htaccess sample
+if you use apache, add .htaccess under project root folder with sample code as follows
 ```sh
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule "^api(.*)" "EstBadminton/index.php" [NC,L]
+RewriteRule "^(.*)" "index.php" [NC,L]
 ```
+
+# Contributing instruction
+
+# Support resources
+
+# Author credit
+
+# Software license
