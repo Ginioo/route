@@ -1,0 +1,23 @@
+{
+    "name": "ginioo/micro",
+    "description": "This's a micro component that makes you construct a tiny website easily.",
+    "keyword": ["micro", "website"],
+    "licence": "MIT",
+    "author": [
+        {
+            "name": "Gino Wu",
+            "role": "developer"
+        }
+    ],
+    "support": {
+        "email": "temporary.address@outlook.com"
+    },
+    "require": {
+        "php": ">=5.3.27"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ginioo\\Sandbox\\": "src/"
+        }
+    }
+}
