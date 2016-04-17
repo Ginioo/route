@@ -58,7 +58,11 @@ class Route extends Event
         if ('POST' === $_SERVER['REQUEST_METHOD']) {
             $input = $_POST;
         } else {
-            parse_str($_SERVER['QUERY_STRING'], $input);
+            if (isset($_SERVER['QUERY_STRING'])) {
+                parse_str($_SERVER['QUERY_STRING'], $input);
+            } else {
+                $input = array();
+            }
         }
 
         return $input;
