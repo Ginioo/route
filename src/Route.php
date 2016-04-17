@@ -154,4 +154,17 @@ class Route extends Event
             }
         };
     }
+
+    public function getResource()
+    {
+        $subject = $_SERVER['REQUEST_URI'];
+        $pattern = '/.(css|js|jpeg|png)$/';
+        preg_match($pattern, $subject, $matches, PREG_OFFSET_CAPTURE);
+        if (isset($matches[0])) {
+            $subject = dirname(dirname(dirname(__DIR__))) . $subject;
+            header("Content-Type: text/{$matches[1][0]}; charset=UTF-8");
+            echo file_get_contents($subject);
+        }
+    }
+
 }
