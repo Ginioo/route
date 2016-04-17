@@ -1,5 +1,5 @@
 # Component name and description
-This component contains a red-black-tree algorithm practise.
+This's a micro component that makes you construct a tiny sandbox website easily.
 
 # Install instruction
 1. create a composer.json in your local project folder
