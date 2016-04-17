@@ -164,7 +164,7 @@ class Route extends Event
             // $subject = dirname(dirname(dirname(__DIR__))) . $subject;
             // header("Content-Type: text/{$matches[1][0]}; charset=UTF-8");
             // echo file_get_contents($subject);
-            return $subject;
+            return array("Content-Type: text/{$matches[1][0]}; charset=UTF-8", $subject);
         }
     }
 
