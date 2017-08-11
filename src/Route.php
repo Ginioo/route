@@ -6,38 +6,50 @@
  * @since   2015.10.01
  * @version v2
  */
-namespace Ginioo\Sandbox;
+<?php
+/**
+ * 路由
+ *
+ * @category Common
+ * @package  Common\Route
+ * @author   Gino Wu <ginowu@taiwanmobile.com>
+ * @since    R3.31
+ */
+namespace Common\Route;
 
 use \Exception;
 
 class Route extends Event
 {
+    const CREATE = 'POST';
+    const RETRIEVE = 'GET';
+    const UPDATE = 'PUT';
+    const DELETE = 'DELETE';
+
+    private $groupKey = '';
+
     /**
      * Mapping crud to event name
-     * POST:create
-     * GET:retrieve
-     * PUT:update
-     * DELETE:delete
      *
      * @param void
      * @return string $eventName
      */
-    public function getRequestEvent()
+    public function getRequestRoute()
     {
         $aRequestUri = explode('?', $_SERVER['REQUEST_URI']);
         $requestUri = $aRequestUri[0];
         switch ($_SERVER['REQUEST_METHOD']) {
-            case 'DELETE':
-                $eventName = 'delete';
+            case self::CREATE:
+                $eventName = self::CREATE;
                 break;
-            case 'POST':
-                $eventName = 'create';
+            case self::RETRIEVE:
+                $eventName = self::RETRIEVE;
                 break;
-            case 'PUT':
-                $eventName = 'update';
+            case self::UPDATE:
+                $eventName = self::UPDATE;
                 break;
-            case 'GET':
-                $eventName = 'retrieve';
+            case self::DELETE:
+                $eventName = self::DELETE;
                 break;
             default:
                 $eventName = '';
@@ -55,14 +67,13 @@ class Route extends Event
      */
     public function getInputData()
     {
-        if ('POST' === $_SERVER['REQUEST_METHOD']) {
+        $input = array();
+        if (isset($_SERVER['QUERY_STRING'])) {
+            parse_str($_SERVER['QUERY_STRING'], $input);
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === self::CREATE) {
             $input = $_POST;
-        } else {
-            if (isset($_SERVER['QUERY_STRING'])) {
-                parse_str($_SERVER['QUERY_STRING'], $input);
-            } else {
-                $input = array();
-            }
         }
 
         return $input;
@@ -78,7 +89,7 @@ class Route extends Event
      */
     public function post($route, $controllerClass, $method)
     {
-        $this->on("create/{$route}", $this->deligate($controllerClass, $method));
+        $this->on(self::CREATE . "/{$this->groupKey}/{$route}", $this->deligate($controllerClass, $method));
     }
 
     /**
@@ -91,7 +102,7 @@ class Route extends Event
      */
     public function get($route, $controllerClass, $method)
     {
-        $this->on("retrieve/{$route}", $this->deligate($controllerClass, $method));
+        $this->on(self::RETRIEVE . "/{$this->groupKey}/{$route}", $this->deligate($controllerClass, $method));
     }
 
     /**
@@ -104,7 +115,7 @@ class Route extends Event
      */
     public function put($route, $controllerClass, $method)
     {
-        $this->on("update/{$route}", $this->deligate($controllerClass, $method));
+        $this->on(self::UPDATE . "/{$this->groupKey}/{$route}", $this->deligate($controllerClass, $method));
     }
 
     /**
@@ -117,7 +128,7 @@ class Route extends Event
      */
     public function delete($route, $controllerClass, $method)
     {
-        $this->on("delete/{$route}", $this->deligate($controllerClass, $method));
+        $this->on(self::DELETE . "/{$this->groupKey}/{$route}", $this->deligate($controllerClass, $method));
     }
 
     /**
@@ -144,28 +155,56 @@ class Route extends Event
             throw new Exception("class: {$controllerClass} does not exist");
         }
 
-        return function ($input) use ($controllerClass, $method) {
+        return function ($parameters) use ($controllerClass, $method) {
             $oController = new $controllerClass();
 
             if (!method_exists($oController, $method)) {
                 throw new Exception("method: {$method} does not exist in class: {$controllerClass}");
             } else {
-                $oController->{$method}($input);
+                call_user_func(array($oController, $method), $parameters);
             }
         };
     }
 
-    public function getResource()
+    /**
+     * group
+     *
+     * @param string $groupKey
+     * @param string $callback
+     * @return this
+     */
+    public function group($groupKey, $callback)
     {
-        $subject = $_SERVER['REQUEST_URI'];
-        $pattern = '/.(css|js|jpeg|png)$/';
-        preg_match($pattern, $subject, $matches, PREG_OFFSET_CAPTURE);
-        if (isset($matches[0])) {
-            // $subject = dirname(dirname(dirname(__DIR__))) . $subject;
-            // header("Content-Type: text/{$matches[1][0]}; charset=UTF-8");
-            // echo file_get_contents($subject);
-            return array("Content-Type: text/{$matches[1][0]}; charset=UTF-8", $subject);
+        if (!is_callable($callback, true)) {
+            throw new Exception("Oops! Something went wrong when grouping routes.");
         }
+
+        $this->groupKey .= ($this->groupKey === '') ? "$groupKey" : "/{$groupKey}";
+        $callback();
     }
+
+    /**
+     * To check if route has set or not
+     *
+     * @param string $name 事件名稱
+     * @return boolean
+     */
+    public function hasRoute($route)
+    {
+        return $this->hasEvent($route);
+    }
+    
+//     public function getResource()
+//     {
+//         $subject = $_SERVER['REQUEST_URI'];
+//         $pattern = '/.(css|js|jpeg|png)$/';
+//         preg_match($pattern, $subject, $matches, PREG_OFFSET_CAPTURE);
+//         if (isset($matches[0])) {
+//             // $subject = dirname(dirname(dirname(__DIR__))) . $subject;
+//             // header("Content-Type: text/{$matches[1][0]}; charset=UTF-8");
+//             // echo file_get_contents($subject);
+//             return array("Content-Type: text/{$matches[1][0]}; charset=UTF-8", $subject);
+//         }
+//     }
 
 }
