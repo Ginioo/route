@@ -6,16 +6,7 @@
  * @since   2015.10.01
  * @version v2
  */
-<?php
-/**
- * 路由
- *
- * @category Common
- * @package  Common\Route
- * @author   Gino Wu <ginowu@taiwanmobile.com>
- * @since    R3.31
- */
-namespace Common\Route;
+namespace Ginioo\Sandbox;
 
 use \Exception;
 
