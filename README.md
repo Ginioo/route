@@ -55,56 +55,48 @@ $loader->addPsr4('Controller\\', $rootPath . '/controllers');
 $loader->register();
 // $loader->setUseIncludePath(true);
 
-use \Ginioo\Sandbox\Route as SampleApplication;
-$app = new SampleApplication();
-
-// route
-$app->get('auction/', '\Controller\AuctionController', 'index');
-
-if ($app->hasEvent($eventName)) {
-    // 觸發事件
-    try {
-        $app->emit($eventName, $input);
-    } catch (Exception $e) {
-        var_dump($e->getMessage());
-    }
-}
-
-/*
+$route = new \Ginioo\Sandbox\Route();
 // use this only under develop environment
-$app->debug(function ($input) {
+$route->debug(function ($input) {
+    // 設定錯誤訊息層級
     error_reporting(E_ALL);
+    // 設定是否顯示錯誤訊息
     ini_set("display_errors", 1);
     ini_set("display_startup_errors", 1);
     ini_set("html_errors", 1);
+    // 設定uniq id應用於log中
+    $uniqId = uniqid('', true);
 
-    echo 'debug start<br>';
+    echo "<hr/>";
+    echo "<strong>{$_SERVER['HTTP_HOST']}:</strong>Hello {$uniqId}";
+    echo "<br><strong>Phalcon Version:</strong>" . Phalcon\Version::get();
+    echo "<br>debug start<br>";
     var_dump($input);
-    echo 'debug end<br>';
+    echo '<br>debug end<br>';
 });
-// */
+// route settings
+$route->group('endpoint', function() use ($route) {
+    $route->group('v1', function() use ($route) {
+        //route: /endpoint/v1/test/
+        $route->get('test/', '\Ginioo\Sandbox\TestController', 'test');
+    });
+});
 
-$input = $app->getInputData();
-$eventName = $app->getRequestEvent();
+
+$inputData = $route->getInputData();
+$requestRoute = $route->getRequestRoute();
 
 try {
-    if ($app->hasEvent($eventName)) {
+    if ($route->hasRoute($requestRoute)) {
         // 觸發事件
-        $app->emit($eventName, $input);
-    } else {
-        $resources = $app->getResource();
-        $header = $resources[0];
-        $subject = "{$rootPath}{$resources[1]}";
-        header($header);
-        echo file_get_contents($subject);
-        exit();
+        $route->emit($requestRoute, $inputData);
+    }
+
+    if (isset($inputData['debug']) && $route->hasEvent('debug')) {
+        $route->emit('debug', $input);
     }
 } catch (Exception $e) {
     var_dump($e->getMessage());
-}
-
-if (isset($input['debug']) && $app->hasEvent('debug')) {
-    $app->emit('debug', $input);
 }
 ```
 
