@@ -64,12 +64,10 @@ $route->debug(function ($input) {
     ini_set("display_errors", 1);
     ini_set("display_startup_errors", 1);
     ini_set("html_errors", 1);
-    // 設定uniq id應用於log中
     $uniqId = uniqid('', true);
 
     echo "<hr/>";
     echo "<strong>{$_SERVER['HTTP_HOST']}:</strong>Hello {$uniqId}";
-    echo "<br><strong>Phalcon Version:</strong>" . Phalcon\Version::get();
     echo "<br>debug start<br>";
     var_dump($input);
     echo '<br>debug end<br>';
