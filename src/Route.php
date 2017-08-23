@@ -80,7 +80,9 @@ class Route extends Event
      */
     public function post($route, $controllerClass, $method)
     {
-        $this->on(self::CREATE . "/{$this->groupKey}/{$route}", $this->deligate($controllerClass, $method));
+        $uri = $this->getRouteUri($route);
+        $routeParameterDefinitionStr = $this->getParameterDefinitionFromRouteString($route);
+        $this->on(self::CREATE . "/{$this->groupKey}/{$uri}", $this->deligate($controllerClass, $method, $routeParameterDefinitionStr));
     }
 
     /**
@@ -93,7 +95,9 @@ class Route extends Event
      */
     public function get($route, $controllerClass, $method)
     {
-        $this->on(self::RETRIEVE . "/{$this->groupKey}/{$route}", $this->deligate($controllerClass, $method));
+        $uri = $this->getRouteUri($route);
+        $routeParameterDefinitionStr = $this->getParameterDefinitionFromRouteString($route);
+        $this->on(self::RETRIEVE . "/{$this->groupKey}/{$uri}", $this->deligate($controllerClass, $method, $routeParameterDefinitionStr));
     }
 
     /**
@@ -106,7 +110,9 @@ class Route extends Event
      */
     public function put($route, $controllerClass, $method)
     {
-        $this->on(self::UPDATE . "/{$this->groupKey}/{$route}", $this->deligate($controllerClass, $method));
+        $uri = $this->getRouteUri($route);
+        $routeParameterDefinitionStr = $this->getParameterDefinitionFromRouteString($route);
+        $this->on(self::UPDATE . "/{$this->groupKey}/{$uri}", $this->deligate($controllerClass, $method, $routeParameterDefinitionStr));
     }
 
     /**
@@ -119,7 +125,9 @@ class Route extends Event
      */
     public function delete($route, $controllerClass, $method)
     {
-        $this->on(self::DELETE . "/{$this->groupKey}/{$route}", $this->deligate($controllerClass, $method));
+        $uri = $this->getRouteUri($route);
+        $routeParameterDefinitionStr = $this->getParameterDefinitionFromRouteString($route);
+        $this->on(self::DELETE . "/{$this->groupKey}/{$uri}", $this->deligate($controllerClass, $method, $routeParameterDefinitionStr));
     }
 
     /**
@@ -138,21 +146,38 @@ class Route extends Event
      *
      * @param string $controllerClass
      * @param string $method
-     * @return void
+     * @return callable
      */
-    private function deligate($controllerClass, $method)
+    protected function deligate($controllerClass, $method, $routeParameterDefinitionStr)
     {
         if (!class_exists($controllerClass)) {
             throw new Exception("class: {$controllerClass} does not exist");
         }
 
-        return function ($parameters) use ($controllerClass, $method) {
-            $oController = new $controllerClass();
+        return function ($routeParameterValueStr, $parameters) use ($controllerClass, $method, $routeParameterDefinitionStr) {
+            $routeParameterDefinitionArray = explode('/', $routeParameterDefinitionStr);
+            $routeParameterValueArray = explode('/', $routeParameterValueStr);
 
+            $params = array();
+            foreach ($routeParameterDefinitionArray as $index => $definitionStr) {
+                if (substr($definitionStr, 0, 1) !== ':') {
+                    continue;
+                }
+
+                if (substr($definitionStr, -1) !== '?' && empty($routeParameterValueArray[$index])) {
+                    throw new Exception("Parameter: {" . strtolower(substr($definitionStr, 1)) . "} is required.");
+                }
+                // $params[] = substr($definitionStr, 1);
+                // $params[] = substr($definitionStr, 1, -1);
+                $params[] = empty($routeParameterValueArray[$index]) ? null : $routeParameterValueArray[$index];
+            }
+            $params[] = $parameters;
+
+            $oController = new $controllerClass();
             if (!method_exists($oController, $method)) {
                 throw new Exception("method: {$method} does not exist in class: {$controllerClass}");
             } else {
-                call_user_func(array($oController, $method), $parameters);
+                call_user_func_array(array($oController, $method), $params);
             }
         };
     }
@@ -182,20 +207,78 @@ class Route extends Event
      */
     public function hasRoute($route)
     {
-        return $this->hasEvent($route);
-    }
-    
-//     public function getResource()
-//     {
-//         $subject = $_SERVER['REQUEST_URI'];
-//         $pattern = '/.(css|js|jpeg|png)$/';
-//         preg_match($pattern, $subject, $matches, PREG_OFFSET_CAPTURE);
-//         if (isset($matches[0])) {
-//             // $subject = dirname(dirname(dirname(__DIR__))) . $subject;
-//             // header("Content-Type: text/{$matches[1][0]}; charset=UTF-8");
-//             // echo file_get_contents($subject);
-//             return array("Content-Type: text/{$matches[1][0]}; charset=UTF-8", $subject);
-//         }
-//     }
+        if ($this->hasEvent($route)) {
+            return true;
+        }
 
+        $name = strtolower($route);
+        $eventNames = array_keys($this->events);
+        foreach ($eventNames as $eventName) {
+            $pos = strpos($name, $eventName);
+            if ($pos === false) {
+                continue;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get route uri
+     * route: 'test/:id?/:id2?/'
+     * expected route uri => 'test/'
+     *
+     * @param string $routeString
+     * @return string
+     */
+    protected function getRouteUri($routeString)
+    {
+        $pos = strpos($routeString, ':');
+        return ($pos) ? substr($routeString, 0, $pos) : $routeString;
+    }
+
+    /**
+     * Get parameter definition from route string
+     * route: 'test/:id?/:id2?/'
+     * expected variable definition => ':id?/:id2?/'
+     *
+     * @param string $routeString
+     * @return string
+     */
+    protected function getParameterDefinitionFromRouteString($routeString)
+    {
+        if (substr($routeString, -1) === '/') {
+            $routeString = substr($routeString, 0, -1);
+        }
+        $pos = strpos($routeString, ':');
+        return ($pos) ? substr($routeString, $pos) : '';
+    }
+
+    /**
+     * Emit event
+     *
+     * @param string $name 觸發事件
+     * @param string $parameters 觸發事件時，外部傳入的參數
+     * @return void
+     */
+    public function emit($name, $parameters)
+    {
+        $name = strtolower($name);
+        $eventNames = array_keys($this->events);
+        foreach ($eventNames as $eventName) {
+            $pos = strpos($name, $eventName);
+            if ($pos === false) {
+                continue;
+            }
+
+            $foundEventName = substr($name, $pos, strlen($eventName));
+            $routeParameterValueStr = substr($name, $pos + strlen($eventName));
+            if (substr($routeParameterValueStr, -1) === '/') {
+                $routeParameterValueStr = substr($routeParameterValueStr, 0, -1);
+            }
+            call_user_func($this->events[$foundEventName], $routeParameterValueStr, $parameters);
+            return true;
+        }
+        return false;
+    }
 }
