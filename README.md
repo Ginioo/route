@@ -76,7 +76,7 @@ $route->debug(function ($input) {
 $route->group('endpoint', function() use ($route) {
     $route->group('v1', function() use ($route) {
         //route: /endpoint/v1/test/
-        $route->get('test/', '\Ginioo\Sandbox\TestController', 'test');
+        $route->get("test/:id?/:id2?/", "\Ginioo\Sandbox\TestController", "test");
     });
 });
 
@@ -85,16 +85,17 @@ $inputData = $route->getInputData();
 $requestRoute = $route->getRequestRoute();
 
 try {
-    if ($route->hasRoute($requestRoute)) {
-        // 觸發事件
-        $route->emit($requestRoute, $inputData);
+    // use this only under develop environment
+    if (isset($inputData['debug']) && $app->hasRoute('debug')) {
+        $app->emit('debug', $inputData);
     }
 
-    if (isset($inputData['debug']) && $route->hasEvent('debug')) {
-        $route->emit('debug', $input);
+    // 觸發事件
+    if ($app->hasRoute($requestRoute)) {
+        $app->emit($requestRoute, $inputData);
     }
 } catch (Exception $e) {
-    var_dump($e->getMessage());
+    echo $e->getMessage();
 }
 ```
 
