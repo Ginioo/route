@@ -75,7 +75,8 @@ $route->debug(function ($input) {
 // route settings
 $route->group('endpoint', function() use ($route) {
     $route->group('v1', function() use ($route) {
-        //route: /endpoint/v1/test/
+        // route: /endpoint/v1/test/
+        // "?": optional
         $route->get("test/:id?/:id2?/", "\Ginioo\Sandbox\TestController", "test");
     });
 });
