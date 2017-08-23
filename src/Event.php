@@ -3,8 +3,7 @@
  * 事件
  *
  * @author  Gino Wu
- * @since   2015.10.01
- * @version v2
+ * @version v3
  */
 namespace Ginioo\Sandbox;
 
@@ -15,7 +14,7 @@ class Event
      *
      * @var array
      */
-    private $events;
+    protected $events;
 
     /**
      * constructor
@@ -36,7 +35,7 @@ class Event
      */
     public function hasEvent($name)
     {
-        $name=strtolower($name);
+        $name = strtolower($name);
         return isset($this->events[$name]);
     }
 
@@ -56,15 +55,14 @@ class Event
     }
 
     /**
-     * To check if there is a event or not.
+     * Emit event
      *
-     * @param string $name 事件名稱
+     * @param string $name 觸發事件
      * @param string $parameters 觸發事件時，外部傳入的參數
      * @return void
      */
     public function emit($name, $parameters)
     {
-        $name = strtolower($name);
         if (isset($this->events[$name])) {
             call_user_func($this->events[$name], $parameters);
         }
