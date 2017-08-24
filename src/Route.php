@@ -176,7 +176,9 @@ class Route extends Event
             if (!method_exists($oController, $method)) {
                 throw new Exception("method: {$method} does not exist in class: {$controllerClass}");
             } else {
-                call_user_func_array(array($oController, $method), $params);
+                $reflectionMethod = new ReflectionMethod($controllerClass, $method);
+                echo $reflectionMethod->invokeArgs($oController, $params);
+                // call_user_func_array(array($oController, $method), $params);
             }
         };
     }
