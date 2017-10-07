@@ -69,6 +69,7 @@ try {
 If you use apache, add `.htaccess` under project root folder with sample code as follows
 ```sh
 RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule "^(.*)" "index.php" [NC,L]
 ```
