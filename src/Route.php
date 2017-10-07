@@ -1,6 +1,6 @@
 <?php
 /**
- * Application
+ * Route
  */
 namespace Ginioo\Route;
 
@@ -56,11 +56,12 @@ class Route extends Event
     {
         $input = array();
         if (isset($_SERVER['QUERY_STRING'])) {
-            parse_str($_SERVER['QUERY_STRING'], $input);
+            // parse_str($_SERVER['QUERY_STRING'], $input);
+            $input = $_GET;
         }
 
         if ($_SERVER['REQUEST_METHOD'] === self::CREATE) {
-            $input = $_POST;
+            $input = ($_POST) ? $_POST : json_decode(file_get_contents('php://input'));
         }
 
         return $input;
