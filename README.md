@@ -37,48 +37,17 @@ $route->group('endpoint', function() use ($route) {
         $route->get("test/:id?/", "\Ginioo\Route\TestController", "test");
     });
 });
+
+return $route;
 ```
-# Testing instruction
-add index.php under project root folder with sample code as follows
+
+add `index.php` under project root folder with sample code as follows
 ```php
+<?php
 //using composer's autoload
-require('vendor/autoload.php');
+require 'vendor/autoload.php';
 
-$rootPath = getcwd();
-$loader = new \Composer\Autoload\ClassLoader();
-// register classes with namespaces
-$loader->addPsr4('Controller\\', $rootPath . '/controllers');
-// activate the autoloader
-$loader->register();
-// $loader->setUseIncludePath(true);
-
-$route = new \Ginioo\Sandbox\Route();
-// use this only under develop environment
-$route->debug(function ($input) {
-    // 設定錯誤訊息層級
-    error_reporting(E_ALL);
-    // 設定是否顯示錯誤訊息
-    ini_set("display_errors", 1);
-    ini_set("display_startup_errors", 1);
-    ini_set("html_errors", 1);
-    $uniqId = uniqid('', true);
-
-    echo "<hr/>";
-    echo "<strong>{$_SERVER['HTTP_HOST']}:</strong>Hello {$uniqId}";
-    echo "<br>debug start<br>";
-    var_dump($input);
-    echo '<br>debug end<br>';
-});
-// route settings
-$route->group('endpoint', function() use ($route) {
-    $route->group('v1', function() use ($route) {
-        // route: /endpoint/v1/test/
-        // "?": optional
-        $route->get("test/:id?/:id2?/", "\Ginioo\Sandbox\TestController", "test");
-    });
-});
-
-
+$route = require 'route.php';
 $inputData = $route->getInputData();
 $requestRoute = $route->getRequestRoute();
 
@@ -97,12 +66,14 @@ try {
 }
 ```
 
-if you use apache, add .htaccess under project root folder with sample code as follows
+If you use apache, add `.htaccess` under project root folder with sample code as follows
 ```sh
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule "^(.*)" "index.php" [NC,L]
 ```
+
+# Testing instruction
 
 # Contributing instruction
 
