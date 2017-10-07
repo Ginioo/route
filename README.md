@@ -2,45 +2,42 @@
 This's a micro component that makes you construct a tiny sandbox website easily.
 
 # Install instruction
-1. create a composer.json in your local project folder
 ```
-{
-    "require": {
-        "ginioo/sandbox": "dev-master"
-    }
-}
-```
-2. then execute
-```
-$ composer install
-```
-   or execute this command
-```
-$ composer require  "ginioo/sandbox:”dev-master"
+$ composer require ginioo/route
 ```
 
 # Usage instruction
-##how to use Event?
+add `route.php` under project root folder with sample code as follows
 ```php
-// varialbe outside of the closure bellow
-$message = 'test Message';
+<?php
 
-// initialize event object;
-$oEvent = new Ginioo\Sandbox\Event();
+$route = new \Ginioo\Route\Route;
 
-// 註冊事件
-$oEvent->on('test', function ($a) use ($message) {
-    echo $message;
-    var_dump($a);
+// use this only under develop environment
+$route->debug(function ($input) {
+    error_reporting(E_ALL);       // 設定錯誤訊息層級
+    ini_set("display_errors", 1); // 設定是否顯示錯誤訊息
+    ini_set("display_startup_errors", 1);
+    ini_set("html_errors", 1);
+    $uniqId = uniqid('', true);
+
+    echo "<hr/>";
+    echo "<strong>{$_SERVER['HTTP_HOST']}:</strong>Hello {$uniqId}";
+    echo "<br>debug start<br>";
+    var_dump($input);
+    echo '<br>debug end<br>';
 });
 
-// 確認事件是否存在
-if ($oEvent->hasEvent('test')) {
-    // 觸發事件
-    $oEvent->emit('test', array('1', '2'));
-}
+// route settings
+$route->group('endpoint', function() use ($route) {
+    $route->group('v1.0', function() use ($route) {
+        // route: /endpoint/v1.0/test/123/
+        // ":id"  is a variable
+        // "?":   means optional
+        $route->get("test/:id?/", "\Ginioo\Route\TestController", "test");
+    });
+});
 ```
-
 # Testing instruction
 add index.php under project root folder with sample code as follows
 ```php
