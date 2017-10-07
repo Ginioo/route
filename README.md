@@ -6,7 +6,7 @@ This's a micro component that makes you construct a tiny sandbox website easily.
 $ composer require ginioo/route
 ```
 
-# Usage instruction
+# Usage
 add `route.php` under project root folder with sample code as follows
 ```php
 <?php
@@ -73,13 +73,3 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule "^(.*)" "index.php" [NC,L]
 ```
-
-# Testing instruction
-
-# Contributing instruction
-
-# Support resources
-
-# Author credit
-
-# Software license
