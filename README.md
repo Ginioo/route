@@ -53,15 +53,16 @@ $requestRoute = $route->getRequestRoute();
 
 try {
     // use this only under develop environment
-    if (isset($inputData['debug']) && $app->hasRoute('debug')) {
-        $app->emit('debug', $inputData);
+    if (isset($inputData['debug']) && $route->hasRoute('debug')) {
+        $route->emit('debug', $inputData);
     }
 
     // 觸發事件
-    if ($app->hasRoute($requestRoute)) {
-        $app->emit($requestRoute, $inputData);
+    if ($route->hasRoute($requestRoute)) {
+        $route->emit($requestRoute, $inputData);
     }
 } catch (Exception $e) {
+    // use this only under develop environment
     echo $e->getMessage();
 }
 ```
