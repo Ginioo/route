@@ -1,5 +1,6 @@
 {
     "name": "ginioo/route",
+    "version": "1.0",
     "description": "This's a micro route component.",
     "keyword": ["route", "php"],
     "licence": "MIT",
