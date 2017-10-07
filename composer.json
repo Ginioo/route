@@ -1,12 +1,11 @@
 {
-    "name": "ginioo/sandbox",
-    "description": "This's a micro component that makes you construct a tiny website easily.",
-    "keyword": ["sandbox", "website"],
+    "name": "ginioo/route",
+    "description": "This's a micro route component.",
+    "keyword": ["route", "php"],
     "licence": "MIT",
     "author": [
         {
             "name": "Gino Wu",
-            "role": "developer"
         }
     ],
     "support": {
@@ -17,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Ginioo\\Sandbox\\": "src/"
+            "Ginioo\\Route\\": "src/"
         }
     }
 }

@@ -1,11 +1,8 @@
 <?php
 /**
  * 事件
- *
- * @author  Gino Wu
- * @version v3
  */
-namespace Ginioo\Sandbox;
+namespace Ginioo\Route;
 
 class Event
 {

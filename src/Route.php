@@ -1,11 +1,8 @@
 <?php
 /**
  * Application
- *
- * @author  Gino Wu
- * @version v3
  */
-namespace Ginioo\Sandbox;
+namespace Ginioo\Route;
 
 use \Exception;
 
@@ -178,7 +175,6 @@ class Route extends Event
             } else {
                 $reflectionMethod = new ReflectionMethod($controllerClass, $method);
                 echo $reflectionMethod->invokeArgs($oController, $params);
-                // call_user_func_array(array($oController, $method), $params);
             }
         };
     }
